@@ -10,7 +10,7 @@ public:
 	Neuron();
 	~Neuron();
 	double value;
-	vector<Connection> numConnections;
+	vector<Connection> connections;
 private:
 
 };

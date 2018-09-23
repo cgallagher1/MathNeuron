@@ -6,7 +6,7 @@ public:
 	Connection();
 	~Connection();
 	double weight;
-
+	int neuronIndex;
 private:
 
 };

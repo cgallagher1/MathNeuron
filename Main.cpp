@@ -14,7 +14,7 @@ int main()
 	srand((unsigned)time(0));
 
 	ifstream testData;
-	testData.open("C:/Users/chuck/Documents/Math Thesis/testingData.txt");
+	testData.open("C:/Users/chuck_000/Documents/Math Thesis/TestData.txt");
 
 	int inputNodes;
 	cout << "Please enter how many input nodes you want: ";
@@ -42,9 +42,9 @@ int main()
 		outputNodeVec.push_back(temp);
 	}
 
-	Net myNet(inputNodeVec,hiddenNodeVec,outputNodeVec);
-
 	int numTests = 0;
+
+	Net myNet(inputNodeVec, hiddenNodeVec, outputNodeVec);
 
 	while (!testData.eof())
 	{
@@ -56,10 +56,22 @@ int main()
 
 		inputs.erase(0, 7);
 		cout << "Inputs: " << inputs << endl;
+		
+		string firstInput = inputs.substr(1, 1);
+		string secondInput = inputs.substr(5, 5);
+
+		int firstInputVal = stoi(firstInput);
+		int secondInputVal = stoi(secondInput);
+
+		myNet.initializeInput(firstInputVal, secondInputVal);
+		myNet.sumWeightsAndValues();
 
 		string output;
 		getline(testData, output);
 		
+		string correctValue = output.substr(1, 1);
+		int targetValue = stoi(correctValue);
+
 		output.erase(0, 8);
 		cout << "Outputs: " << output << endl;
 	}
