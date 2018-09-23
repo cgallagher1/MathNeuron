@@ -5,7 +5,8 @@ class Connection
 public:
 	Connection();
 	~Connection();
-	double weight;
+	double weightNew;
+	double weightOld;
 	int neuronIndex;
 private:
 

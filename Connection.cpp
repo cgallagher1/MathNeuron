@@ -5,7 +5,7 @@
 Connection::Connection()
 {
 	double r = ((double)rand() / (RAND_MAX));
-	weight = r;
+	weightOld = r;
 }
 
 Connection::~Connection()

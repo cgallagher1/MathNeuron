@@ -38,21 +38,37 @@ void Net::initializeInput(int first, int second)
 	inputVec[1].value = second;
 }
 
-void Net::sumWeightsAndValues()
+double Net::sumWeightsAndValues()
 {
 	double sum = 0;
 	for (int i = 0; i < outputVec.size(); i++)
 	{
 		for (int j = 0; j < outputVec[i].connections.size(); j++)
 		{
-			sum += outputVec[i].connections[j].weight * inputVec[outputVec[i].connections[j].neuronIndex].value;
+			sum += outputVec[i].connections[j].weightOld * inputVec[outputVec[i].connections[j].neuronIndex].value;
 		}
 		outputVec[i].value = sigmoid(sum);
 	}
+
+	return outputVec[0].value;
 }
 
 double Net::sigmoid(double & sum)
 {
 	double afterSigmoid = (1 / (1 + pow(e, (sum * -1))));
 	return afterSigmoid;
+}
+
+double Net::derivate(double & sum)
+{
+	double afterDer = (pow(e, -sum)) / pow((1 + pow(e, -sum)), 2);
+	return afterDer;
+}
+
+void Net::calcError(double realValue)
+{
+	//(yt - dt) 
+	differnceError = outputVec[0].value - realValue;
+	double afterDev = derivate(outputVec[0].value);
+
 }

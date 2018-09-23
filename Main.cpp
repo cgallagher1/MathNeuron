@@ -10,9 +10,9 @@ using namespace std;
 
 int main()
 {
-
 	srand((unsigned)time(0));
 
+	//Where to get data
 	ifstream testData;
 	testData.open("C:/Users/chuck_000/Documents/Math Thesis/TestData.txt");
 
@@ -31,8 +31,12 @@ int main()
 	vector<Neuron>hiddenNodeVec;
 
 	int outputNode;
-	cout << "PLease enter how many output nodes you want: ";
+	cout << "Please enter how many output nodes you want: ";
 	cin >> outputNode;
+
+	double threshold;
+	cout << "Please enter your threshold: ";
+	cin >> threshold;
 
 	vector<Neuron>outputNodeVec;
 
@@ -42,13 +46,23 @@ int main()
 		outputNodeVec.push_back(temp);
 	}
 
-	int numTests = 0;
-
+	//Create network with random weights
 	Net myNet(inputNodeVec, hiddenNodeVec, outputNodeVec);
 
+	//while (testThresh > threshold)
+
+	//Vectors to hold inputs and desired outputs from the data file
+	vector<vector<double>> inputData;
+	vector<vector<double>> outputData;
+	vector<vector<double>> sigmoidData;
+
+	//Keeps tracks of how many tests
+	int numTests = 0;
+
+	//Gets all the inputs and Outputs from the file
+	//Works only for 2 input 1 output right now
 	while (!testData.eof())
 	{
-		numTests++;
 		cout << "Test: " << numTests << endl;
 
 		string inputs;
@@ -63,19 +77,45 @@ int main()
 		int firstInputVal = stoi(firstInput);
 		int secondInputVal = stoi(secondInput);
 
-		myNet.initializeInput(firstInputVal, secondInputVal);
-		myNet.sumWeightsAndValues();
+		//Saves 2 inputs
+		vector<double> tempInput;
+		tempInput.push_back((double)firstInputVal);
+		tempInput.push_back((double)secondInputVal);
+		inputData.push_back(tempInput);
 
 		string output;
 		getline(testData, output);
 		
-		string correctValue = output.substr(1, 1);
-		int targetValue = stoi(correctValue);
-
 		output.erase(0, 8);
+
+		int targetValue = stoi(output);
+		
+		//Saves 1 output
+		vector <double> tempOutput;
+		tempOutput.push_back((double)targetValue);
+		outputData.push_back(tempOutput);
+
 		cout << "Outputs: " << output << endl;
+
+		numTests++;
 	}
 
+	//For each data set
+	for (int i = 0; i < numTests; i++)
+	{
+		//Initializes the inputs
+		myNet.initializeInput(inputData[i][0], inputData[i][1]);
+
+		//gets the sigmoid(w * inputs)
+		vector<double> tempSig;
+		tempSig.push_back(myNet.sumWeightsAndValues());
+		sigmoidData.push_back(tempSig);
+	}
+
+	testData.close();
+
 	cin.get();
+	cout << "Please hit enter to continue" << endl;
+	cin.ignore();
 	return 0;
 }
