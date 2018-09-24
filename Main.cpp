@@ -8,13 +8,15 @@
 
 using namespace std;
 
+double calcError(vector<vector<double>> & sigmoidData, vector<vector<double>> & outputData);
+
 int main()
 {
 	srand((unsigned)time(0));
 
 	//Where to get data
 	ifstream testData;
-	testData.open("C:/Users/chuck_000/Documents/Math Thesis/TestData.txt");
+	testData.open("C:/Users/chuck/Documents/Math Thesis/TestData.txt");
 
 	int inputNodes;
 	cout << "Please enter how many input nodes you want: ";
@@ -49,7 +51,8 @@ int main()
 	//Create network with random weights
 	Net myNet(inputNodeVec, hiddenNodeVec, outputNodeVec);
 
-	//while (testThresh > threshold)
+	double currentError = 100.00;
+
 
 	//Vectors to hold inputs and desired outputs from the data file
 	vector<vector<double>> inputData;
@@ -57,13 +60,13 @@ int main()
 	vector<vector<double>> sigmoidData;
 
 	//Keeps tracks of how many tests
-	int numTests = 0;
+	int numDataSet = 0;
 
 	//Gets all the inputs and Outputs from the file
 	//Works only for 2 input 1 output right now
 	while (!testData.eof())
 	{
-		cout << "Test: " << numTests << endl;
+		cout << "Data set: " << numDataSet << endl;
 
 		string inputs;
 		getline(testData, inputs);
@@ -71,8 +74,8 @@ int main()
 		inputs.erase(0, 7);
 		cout << "Inputs: " << inputs << endl;
 		
-		string firstInput = inputs.substr(1, 1);
-		string secondInput = inputs.substr(5, 5);
+		string firstInput = inputs.substr(0, 1);
+		string secondInput = inputs.substr(4, 5);
 
 		int firstInputVal = stoi(firstInput);
 		int secondInputVal = stoi(secondInput);
@@ -97,25 +100,60 @@ int main()
 
 		cout << "Outputs: " << output << endl;
 
-		numTests++;
-	}
-
-	//For each data set
-	for (int i = 0; i < numTests; i++)
-	{
-		//Initializes the inputs
-		myNet.initializeInput(inputData[i][0], inputData[i][1]);
-
-		//gets the sigmoid(w * inputs)
-		vector<double> tempSig;
-		tempSig.push_back(myNet.sumWeightsAndValues());
-		sigmoidData.push_back(tempSig);
+		numDataSet++;
 	}
 
 	testData.close();
+
+	int numTests = 0;
+
+	while (currentError > threshold)
+	{
+		numTests++;
+
+		cout << "Test number: " << numTests << endl;
+		sigmoidData.clear();
+
+		//For each data set
+		for (int i = 0; i < numDataSet; i++)
+		{
+			//Initializes the inputs
+			myNet.initializeInput(inputData[i][0], inputData[i][1]);
+
+			//gets the sigmoid(w * inputs)
+			vector<double> tempSig;
+			tempSig.push_back(myNet.sumWeightsAndValues());
+			sigmoidData.push_back(tempSig);
+		}
+
+		//Calcs the current error
+		currentError = calcError(sigmoidData, outputData);
+
+		cout << "Current Error: " << currentError << endl;
+
+		//If error too large backpropogate and then go through again
+		if (currentError > threshold)
+		{
+			myNet.backProp(sigmoidData, outputData, inputData);
+		}
+	}
 
 	cin.get();
 	cout << "Please hit enter to continue" << endl;
 	cin.ignore();
 	return 0;
+}
+
+double calcError(vector<vector<double>> & sigmoidData, vector<vector<double>> & outputData)
+{
+	double runningDifference = 0;
+	for (unsigned int i = 0; i < sigmoidData.size(); i++)
+	{
+		double tempDifference = sigmoidData[i][0] - outputData[i][0];
+		runningDifference += pow(tempDifference, 2);
+	}
+
+	runningDifference = runningDifference * .5;
+
+	return runningDifference;
 }

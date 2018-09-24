@@ -1,0 +1,5 @@
+﻿  Net.cpp
+c:\users\chuck\documents\math thesis\mathneuron\mathneuron\net.cpp(73): warning C4018: '<': signed/unsigned mismatch
+c:\users\chuck\documents\math thesis\mathneuron\mathneuron\net.cpp(75): warning C4018: '<': signed/unsigned mismatch
+c:\users\chuck\documents\math thesis\mathneuron\mathneuron\net.cpp(77): warning C4018: '<': signed/unsigned mismatch
+  MathNeuron.vcxproj -> C:\Users\chuck\Documents\Math Thesis\MathNeuron\Debug\MathNeuron.exe

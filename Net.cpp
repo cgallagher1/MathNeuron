@@ -15,9 +15,9 @@ Net::Net(vector<Neuron>& inputNodeVec, vector<Neuron>& hiddenNodeVec, vector<Neu
 	inputVec = inputNodeVec;
 	if (hiddenNodeVec.size() == 0)
 	{
-		for (int i = 0; i < outputVec.size(); i++)
+		for (unsigned int i = 0; i < outputVec.size(); i++)
 		{
-			for (int j = 0; j < inputVec.size(); j++)
+			for (unsigned int j = 0; j < inputVec.size(); j++)
 			{
 				Connection temp;
 				outputVec[i].connections.push_back(temp);
@@ -25,6 +25,8 @@ Net::Net(vector<Neuron>& inputNodeVec, vector<Neuron>& hiddenNodeVec, vector<Neu
 			}
 		}
 	}
+
+	learningRate = .1;
 }
 
 
@@ -41,12 +43,13 @@ void Net::initializeInput(int first, int second)
 double Net::sumWeightsAndValues()
 {
 	double sum = 0;
-	for (int i = 0; i < outputVec.size(); i++)
+	for (unsigned int i = 0; i < outputVec.size(); i++)
 	{
-		for (int j = 0; j < outputVec[i].connections.size(); j++)
+		for (unsigned int j = 0; j < outputVec[i].connections.size(); j++)
 		{
 			sum += outputVec[i].connections[j].weightOld * inputVec[outputVec[i].connections[j].neuronIndex].value;
 		}
+		preActivationSum.push_back(sum);
 		outputVec[i].value = sigmoid(sum);
 	}
 
@@ -65,10 +68,21 @@ double Net::derivate(double & sum)
 	return afterDer;
 }
 
-void Net::calcError(double realValue)
+void Net::backProp(vector<vector<double>>& sigmoidData, vector<vector<double>>& outputData, vector<vector<double>> & inputData)
 {
-	//(yt - dt) 
-	differnceError = outputVec[0].value - realValue;
-	double afterDev = derivate(outputVec[0].value);
-
+	for (int i = 0; i < outputVec.size(); i++)
+	{
+		for (int j = 0; j < outputVec[i].connections.size(); j++)
+		{
+			for (int k = 0; k < sigmoidData.size(); k++)
+			{
+				outputVec[i].connections[j].weightDelta += (sigmoidData[k][0] - outputData[k][0]) * derivate(preActivationSum[k]) * inputData[k][j];
+			}
+			outputVec[i].connections[j].weightOld = outputVec[i].connections[j].weightOld * learningRate * -1 + outputVec[i].connections[j].weightDelta;
+		}
+	}
 }
+
+
+
+

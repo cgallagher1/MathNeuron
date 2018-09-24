@@ -17,10 +17,12 @@ public:
 	double sumWeightsAndValues();
 	double sigmoid(double & sum);
 	double derivate(double & sum);
-	void calcError(double realValue);
-	double differnceError;
+	double error;
+	void backProp(vector<vector<double>> & sigmoidData, vector<vector<double>> & outputData, vector<vector<double>> & inputData);
 	vector<Neuron>outputVec;
 	vector<Neuron>inputVec;
+	vector<double>preActivationSum;
+	double learningRate;
 private:
 	
 };
