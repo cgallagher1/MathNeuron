@@ -74,11 +74,17 @@ void Net::backProp(vector<vector<double>>& sigmoidData, vector<vector<double>>& 
 	{
 		for (int j = 0; j < outputVec[i].connections.size(); j++)
 		{
+			//Calc delta weight
 			for (int k = 0; k < sigmoidData.size(); k++)
 			{
 				outputVec[i].connections[j].weightDelta += (sigmoidData[k][0] - outputData[k][0]) * derivate(preActivationSum[k]) * inputData[k][j];
 			}
-			outputVec[i].connections[j].weightOld = outputVec[i].connections[j].weightOld * learningRate * -1 + outputVec[i].connections[j].weightDelta;
+
+			//delta weight = -(2E/2w)
+			outputVec[i].connections[j].weightDelta = outputVec[i].connections[j].weightDelta * -1;
+
+			//Updates weight
+			outputVec[i].connections[j].weightOld = outputVec[i].connections[j].weightOld + (learningRate * outputVec[i].connections[j].weightDelta);
 		}
 	}
 }

@@ -16,7 +16,7 @@ int main()
 
 	//Where to get data
 	ifstream testData;
-	testData.open("C:/Users/chuck/Documents/Math Thesis/TestData.txt");
+	testData.open("C:/Users/chuck_000/Documents/Math Thesis/TestData.txt");
 
 	int inputNodes;
 	cout << "Please enter how many input nodes you want: ";
@@ -128,7 +128,8 @@ int main()
 
 		//Calcs the current error
 		currentError = calcError(sigmoidData, outputData);
-
+		cout << "First test guess " << sigmoidData[0][0] << " should be " << outputData[0][0] << endl;
+		cout << "Second test guess " << sigmoidData[1][0] << " should be " << outputData[1][0] << endl;
 		cout << "Current Error: " << currentError << endl;
 
 		//If error too large backpropogate and then go through again
@@ -137,6 +138,8 @@ int main()
 			myNet.backProp(sigmoidData, outputData, inputData);
 		}
 	}
+
+	//Maybe test it now
 
 	cin.get();
 	cout << "Please hit enter to continue" << endl;
@@ -153,7 +156,7 @@ double calcError(vector<vector<double>> & sigmoidData, vector<vector<double>> & 
 		runningDifference += pow(tempDifference, 2);
 	}
 
-	runningDifference = runningDifference * .5;
+	runningDifference = runningDifference * (1.00/sigmoidData.size());
 
 	return runningDifference;
 }
